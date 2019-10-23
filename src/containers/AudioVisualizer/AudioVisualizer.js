@@ -107,7 +107,8 @@ const AudioVisualization = (loaderBar, playIntro, audioElement, btnPlay, btnPaus
             console.log('INGRESA AL CONSTRUCTOR DE AUDIO 3D');
 
             //this.songFile = 'https://iondrimbafilho.me/autotron.mp3';
-            this.songFile = 'https://iondrimbafilho.me/3d5/ocean_drive.mp3';
+            //this.songFile = 'https://iondrimbafilho.me/3d5/ocean_drive.mp3';
+            this.songFile = './songs/subhuman.mp3';
             this.percent = 0;
             this.playing = false;
             this.volume = 1;
