@@ -1,0 +1,31 @@
+.MixingBoard{
+    width: 35%;
+    height: 100%;
+    color: black;
+
+    & .color_pickers{
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        & section{
+            width: 46%;
+            margin: 0 2%;
+        }
+        & #bg{
+
+        }
+        & #fg{
+
+        }
+    }
+}
+
+#btn_black{
+    color: black;
+    border: 2px solid black;
+
+    &:hover{
+        color: white;
+        background-color: black;
+    }
+}
