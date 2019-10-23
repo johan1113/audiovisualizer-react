@@ -12,13 +12,14 @@ function AudioVisualizer() {
     const audioElementParent = React.useRef();
     const btnPlayParent = React.useRef();
     const btnPauseParent = React.useRef();
+    const canvasParent = React.useRef();
 
     React.useEffect( () => {
-        AudioVisualization(loaderBarParent.current, playIntroParent.current, audioElementParent.current, btnPlayParent.current, btnPauseParent.current);
+        AudioVisualization(loaderBarParent.current, playIntroParent.current, audioElementParent.current, btnPlayParent.current, btnPauseParent.current, canvasParent.current);
     }, []);
 
     return (
-        <div className="AudioVisualizer">
+        <div className="AudioVisualizer" ref={canvasParent}>
 
             {/*
             <AudioVisualization />
@@ -72,7 +73,7 @@ function AudioVisualizer() {
     )
 }
 
-const AudioVisualization = (loaderBar, playIntro, audioElement, btnPlay, btnPause) => {
+const AudioVisualization = (loaderBar, playIntro, audioElement, btnPlay, btnPause, canvas) => {
 
     class Loader {
         constructor() {
@@ -105,7 +106,8 @@ const AudioVisualization = (loaderBar, playIntro, audioElement, btnPlay, btnPaus
 
             console.log('INGRESA AL CONSTRUCTOR DE AUDIO 3D');
 
-            this.songFile = 'https://iondrimbafilho.me/autotron.mp3';
+            //this.songFile = 'https://iondrimbafilho.me/autotron.mp3';
+            this.songFile = 'https://iondrimbafilho.me/3d5/ocean_drive.mp3';
             this.percent = 0;
             this.playing = false;
             this.volume = 1;
@@ -335,7 +337,7 @@ const AudioVisualization = (loaderBar, playIntro, audioElement, btnPlay, btnPaus
             this.groupTiles.position.set(10, 0, -5);
             this.scene.add(this.groupTiles);
 
-            document.body.appendChild(this.renderer.domElement);
+            canvas.appendChild(this.renderer.domElement);
         }
 
         addEventListener() {
@@ -344,21 +346,21 @@ const AudioVisualization = (loaderBar, playIntro, audioElement, btnPlay, btnPaus
                 this.play();
             });
 
-            document.body.addEventListener('mouseup', () => {
+            canvas.addEventListener('mouseup', () => {
                 requestAnimationFrame(() => {
-                    document.body.style.cursor = '-moz-grab';
-                    document.body.style.cursor = '-webkit-grab';
+                    canvas.style.cursor = '-moz-grab';
+                    canvas.style.cursor = '-webkit-grab';
                 });
             });
 
-            document.body.addEventListener('mousedown', () => {
+            canvas.addEventListener('mousedown', () => {
                 requestAnimationFrame(() => {
-                    document.body.style.cursor = '-moz-grabbing';
-                    document.body.style.cursor = '-webkit-grabbing';
+                    canvas.style.cursor = '-moz-grabbing';
+                    canvas.style.cursor = '-webkit-grabbing';
                 });
             });
 
-            document.body.addEventListener('keyup', (evt) => {
+            canvas.addEventListener('keyup', (evt) => {
                 if (evt.keyCode === 32 || evt.code === 'Space') {
                     this.playing ? this.pause() : this.play();
                 }
