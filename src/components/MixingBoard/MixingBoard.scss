@@ -1,30 +1,49 @@
-.MixingBoard{
+
+.MixingBoard {
     width: 35%;
     height: 100%;
-    color: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
-    & .color_pickers{
+    & .title {
+        & h1 {
+            color: black;
+        }
+    }
+
+    & .color_pickers {
         display: flex;
         justify-content: center;
+        flex-direction: column;
         width: 100%;
-        & section{
-            width: 46%;
-            margin: 0 2%;
-        }
-        & #bg{
 
+        & section {
+            width: 80%;
+            margin: 0 10%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            & h2{
+                color: rgb(20, 20, 20);
+            }
+            & .hue-picker{
+                width: 100%;
+            }
         }
-        & #fg{
 
-        }
+        & #bg {}
+
+        & #fg {}
     }
 }
 
-#btn_black{
+#btn_black {
+    width: 80%;
     color: black;
     border: 2px solid black;
 
-    &:hover{
+    &:hover {
         color: white;
         background-color: black;
     }

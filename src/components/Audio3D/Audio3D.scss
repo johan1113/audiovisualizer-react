@@ -1,5 +1,6 @@
 .Audio3D{
     width: 65%;
+    height: 100%;
     margin: 0;
     padding: 0;
     font-family: 'Ropa Sans', sans-serif;
@@ -43,6 +44,7 @@ canvas {
     width: 100%;
   }
   
+  /*
   .controls {
     position: absolute;
     right: 30px;
@@ -52,6 +54,7 @@ canvas {
   .play, .pause {
     display: none;
   }
+  */
   
   .control-show {
     display: block;

@@ -17,7 +17,7 @@ function Audio3D() {
     }, []);
 
     return (
-        <div className="Audio3D" ref={canvasParent}>
+        <div className="Audio3D" width="65%" height="100%" ref={canvasParent}>
 
             <button className="play-intro" ref={playIntroParent}>
                 <svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 32 32"
@@ -30,10 +30,12 @@ function Audio3D() {
 
 
             <div className="credits" title="Music by Garth Knight">
+                {/* 
                 <h1 className="title">
                     <a href="https://garth-knight.bandcamp.com/" target="_blank" rel="noopener noreferrer">Garth Knight </a>/
                     <a href="https://garth-knight.bandcamp.com/track/autotron-re-master" target="_blank" rel="noopener noreferrer">AutoTron Re​-​Master</a>
                 </h1>
+                */}
                 <div className="controls">
                     <button className="play" ref={btnPlayParent}>
                         <svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" version="1.1" width="32" height="32" viewBox="0 0 25 32"
@@ -318,7 +320,8 @@ const AudioVisualization = (loaderBar, playIntro, audioElement, btnPlay, btnPaus
             this.scene.background = new THREE.Color(this.sceneBackGroundColor);
 
             this.renderer = new THREE.WebGLRenderer({ antialias: true });
-            this.renderer.setSize(window.innerWidth, window.innerHeight);
+            console.log('width: '+canvas.offsetWidth +'  //   height:'+canvas.offsetHeight);
+            this.renderer.setSize(canvas.offsetWidth, canvas.offsetHeight);
 
             this.renderer.shadowMap.enabled = true;
             this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -357,7 +360,7 @@ const AudioVisualization = (loaderBar, playIntro, audioElement, btnPlay, btnPaus
         }
 
         createCamera() {
-            this.camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1, 1000);
+            this.camera = new THREE.PerspectiveCamera(30, canvas.offsetWidth/ canvas.offsetHeight, 1, 1000);
             this.camera.position.set(50, 50, -50);
             this.scene.add(this.camera);
         }
@@ -384,8 +387,8 @@ const AudioVisualization = (loaderBar, playIntro, audioElement, btnPlay, btnPaus
         }
 
         onResize() {
-            const ww = window.innerWidth;
-            const wh = window.innerHeight;
+            const ww = canvas.offsetWidth;
+            const wh = canvas.offsetHeight;
 
             this.camera.aspect = ww / wh;
             this.camera.updateProjectionMatrix();
