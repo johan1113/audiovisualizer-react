@@ -1,4 +1,3 @@
-
 .MixingBoard {
     width: 35%;
     height: 100%;
@@ -24,10 +23,12 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            & h2{
+
+            & h2 {
                 color: rgb(20, 20, 20);
             }
-            & .hue-picker{
+
+            & .hue-picker {
                 width: 100%;
             }
         }
@@ -47,4 +48,8 @@
         color: white;
         background-color: black;
     }
+}
+
+#labelSong {
+    display: none;
 }

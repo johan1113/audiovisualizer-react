@@ -1,42 +1,50 @@
 import React from 'react';
 import './MixingBoard.scss';
-import { HuePicker } from 'react-color';
+import { CirclePicker } from 'react-color';
 
-function MixingBoard() {
+const MixingBoard = (props) => {
 
-    const [bgColor, setBgColor] = React.useState('#FFFFFF');
-    const [fgColor, setFgColor] = React.useState('#FFFFFF');
     const [onPlay, setOnPlay] = React.useState(false);
 
     const handleBgColorChange = (bgColor) => {
-        setBgColor(bgColor.hex);
-        console.log(bgColor);
+        props.setBgColor(bgColor.hex);
+        console.log(bgColor.hex);
+        console.log(props.bgColor);
     }
 
     const handleFgColorChange = (fgColor) => {
-        setFgColor(fgColor.hex);
-        console.log(fgColor);
+        props.setFgColor(fgColor.hex);
+        console.log(fgColor.hex);
+        console.log(props.fgColor);
     }
 
-    function handlePlay (){
+    const handleChange = (event) => {
+        var newMp3File = URL.createObjectURL(event.currentTarget.files[0]);
+        console.log('/////// NEW MP3 FILE //////////')
+        console.log(newMp3File);
+        props.setMp3File(newMp3File);
+       //props.setMp3File('https://iondrimbafilho.me/3d5/ocean_drive.mp3');
+    }
+    
+    function handlePlay() {
         setOnPlay(true);
     }
 
-    function handleStop (){
+    function handleStop() {
         setOnPlay(false);
     }
-
     return (
         <div className="MixingBoard">
             <div className="title">
                 <h1>Sound Mixer</h1>
             </div>
 
-            <button className="button" id="btn_black">Load Audio</button>
+            <input type="file" id="labelSong" accept = ".mp3" onChange={handleChange}/>
+            <label className="button" id="btn_black" for="labelSong">Load Audio</label>
 
 
             <div className="controls">
-                <button className="play" style={{display: !onPlay ? 'block' : 'none'}} onClick={handlePlay}>
+                <button className="play" style={{ display: !onPlay ? 'block' : 'none' }} onClick={handlePlay}>
                     <svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" version="1.1" width="32" height="32" viewBox="0 0 25 32"
                         data-tags="play,media control">
                         <g fill="#000000" transform="scale(0.03125 0.03125)">
@@ -44,7 +52,7 @@ function MixingBoard() {
                         </g>
                     </svg>
                 </button>
-                <button className="pause" style={{display: onPlay ? 'block' : 'none'}} onClick={handleStop}>
+                <button className="pause" style={{ display: onPlay ? 'block' : 'none' }} onClick={handleStop}>
                     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="32" height="32" viewBox="0 0 32 32"
                         data-tags="pause,media control">
                         <g fill="#000000" transform="scale(0.03125 0.03125)">
@@ -58,12 +66,12 @@ function MixingBoard() {
             <div className="color_pickers">
                 <section id="bg">
                     <h2>Background Color</h2>
-                    <HuePicker color={bgColor} onChange={handleBgColorChange} />
+                    <CirclePicker color={props.bgColor} onChange={handleBgColorChange} />
                 </section>
 
                 <section id="fg">
                     <h2>Figures Color</h2>
-                    <HuePicker color={fgColor} onChange={handleFgColorChange} />
+                    <CirclePicker color={props.fgColor} onChange={handleFgColorChange} />
                 </section>
             </div>
         </div>

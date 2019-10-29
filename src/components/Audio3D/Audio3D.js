@@ -1,20 +1,37 @@
 import React from 'react';
 import * as THREE from 'three';
 import OrbitControls from 'three-orbitcontrols';
-import { TweenMax, Power2, TimelineLite } from "gsap/TweenMax";
+import { TweenMax, Power2 } from "gsap/TweenMax";
 import './Audio3D.scss';
 
-function Audio3D() {
-    const loaderBarParent = React.useRef();
+const Audio3D = (props) => {
+
+    //const loaderBarParent = React.useRef();
     const playIntroParent = React.useRef();
     const audioElementParent = React.useRef();
     const btnPlayParent = React.useRef();
     const btnPauseParent = React.useRef();
     const canvasParent = React.useRef();
 
+    const sketch = React.useRef();
+
     React.useEffect(() => {
-        AudioVisualization(loaderBarParent.current, playIntroParent.current, audioElementParent.current, btnPlayParent.current, btnPauseParent.current, canvasParent.current);
+        sketch.current = AudioVisualization(playIntroParent.current, audioElementParent.current, btnPlayParent.current, btnPauseParent.current, canvasParent.current, props.bgColor, props.fgColor);
     }, []);
+
+    React.useEffect(() => {
+        sketch.current.setSceneColor(props.bgColor);
+    }, props.bgColor);
+
+    React.useEffect(() => {
+        sketch.current.setTalesColor(props.fgColor);
+    }, props.fgColor);
+    
+    React.useEffect(() => {
+        console.log(props.mp3File);
+        //sketch.current.setSongFile(props.mp3File);
+        //sketch.current.setSongFile('./songs/subhuman.mp3');
+    }, props.mp3File); 
 
     return (
         <div className="Audio3D" width="65%" height="100%" ref={canvasParent}>
@@ -30,6 +47,7 @@ function Audio3D() {
 
 
             <div className="credits" title="Music by Garth Knight">
+                <h3>{`Background Color: ${props.bgColor}  // Figures Color: ${props.fgColor}`}</h3>
                 {/* 
                 <h1 className="title">
                     <a href="https://garth-knight.bandcamp.com/" target="_blank" rel="noopener noreferrer">Garth Knight </a>/
@@ -57,65 +75,117 @@ function Audio3D() {
                 </div >
             </div >
 
-            <div className="loader" ref={loaderBarParent}></div>
+            {/*<div className="loader" ref={loaderBarParent}></div>*/}
             <audio id="audio" crossOrigin="anonymous" ref={audioElementParent}></audio>
         </div>
     )
 }
 
-const AudioVisualization = (loaderBar, playIntro, audioElement, btnPlay, btnPause, canvas) => {
+const AudioVisualization = (playIntro, audioElement, btnPlay, btnPause, canvas, bgColor, fgColor) => {
 
-    class Loader {
-        constructor() {
-          this.callback = null;
-        }
-      
-        load(file) {
-          const request = new XMLHttpRequest();
-      
-          request.open('GET', file, true);
-          request.onprogress = (evt) => {
-            const percent = Math.floor((evt.loaded / evt.total) * 100);
-      
-            this.callback(percent);
-          };
-          
-          request.onload = () => { this.complete(file) };
-          request.send();
-        }
-      
-        progress(callback) { this.callback = callback; };
-      
-        complete() { }
-      }
-      
-
-    class App { 
+    class App {
 
         constructor() {
 
             console.log('INGRESA AL CONSTRUCTOR DE AUDIO 3D');
 
-            //this.songFile = 'https://iondrimbafilho.me/autotron.mp3';
+            this.songFile = 'https://iondrimbafilho.me/autotron.mp3';
             //this.songFile = 'https://iondrimbafilho.me/3d5/ocean_drive.mp3';
-            this.songFile = './songs/subhuman.mp3';
+            //this.songFile = './songs/subhuman.mp3';
             this.percent = 0;
             this.playing = false;
             this.volume = 1;
-            this.sceneBackGroundColor = 0xfff700;
-            this.objectsColor = 0xae12d4;
+            this.sceneBackGroundColor = bgColor;
+            this.objectsColor = fgColor;
             this.rowTiles = [];
             this.groupTiles = new THREE.Object3D();
 
-            this.loader = new Loader();
-            this.loader.progress(percent => { this.progress(percent); });
+            //this.loader = new Loader();
+            //this.loader.progress(percent => { this.progress(percent); });
             //loaderBar = document.querySelector('.loader');
-            this.loader.load(this.songFile);
-            this.loader.complete = this.complete.bind(this);
+            //this.loader.load(this.songFile);
+            //this.loader.complete = this.complete.bind(this);
             //playIntro = document.querySelector('.play-intro');
+            this.load(this.songFile);
+            this.complete.bind(this.songFile);
 
+            this.scene = new THREE.Scene();
+            this.scene.background = new THREE.Color(this.sceneBackGroundColor);
+
+            
         }
 
+        setSongFile(newSongFile){            
+
+            if(audioElement){
+                audioElement.pause();
+            }
+
+            audioElement.src = newSongFile;
+
+            console.log('///////////// ENTRA A CAMBO DE AUDIO ////////////////');
+        }
+
+        setSceneColor(newColor) {
+            this.scene.background = new THREE.Color(newColor);
+        }
+
+        setTalesColor(newColor) {
+            this.objectsColor = newColor;
+            /*
+            this.material = new THREE.MeshLambertMaterial({
+                color: newColor,
+                emissive: 0x0
+            });
+            */
+        }
+
+        setupAudio() {
+            //audioElement = document.getElementById('audio');
+
+            this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+            this.analyser = this.audioCtx.createAnalyser();
+            this.analyser.fftSize = 2048;
+            this.analyser.smoothingTimeConstant = .85;
+
+            this.source = this.audioCtx.createMediaElementSource(audioElement);
+            this.source.connect(this.analyser);
+            this.source.connect(this.audioCtx.destination);
+
+            this.bufferLength = this.analyser.frequencyBinCount;
+
+            this.frequencyData = new Uint8Array(this.bufferLength);
+            audioElement.volume = this.volume;
+
+            audioElement.addEventListener('playing', () => {
+                this.playing = true;
+            });
+            audioElement.addEventListener('pause', () => {
+                this.playing = false;
+            });
+            audioElement.addEventListener('ended', () => {
+                this.playing = false;
+                this.pause();
+            });
+        }
+
+        load(file) {
+            const request = new XMLHttpRequest();
+
+            request.open('GET', file, true);
+            request.onprogress = (evt) => {
+                const percent = Math.floor((evt.loaded / evt.total) * 100);
+
+                //this.callback(percent);
+            };
+
+            request.onload = () => { this.complete(file) };
+            request.send();
+            playIntro.classList.add('control-show');
+        }
+
+        /*
         progress(percent) {
             loaderBar.style.transform = `scale(${(percent / 100) + .1}, 1.1)`;
 
@@ -129,6 +199,7 @@ const AudioVisualization = (loaderBar, playIntro, audioElement, btnPlay, btnPaus
                 }, 300);
             }
         }
+        */
 
         complete(file) {
             setTimeout(() => {
@@ -143,7 +214,7 @@ const AudioVisualization = (loaderBar, playIntro, audioElement, btnPlay, btnPaus
                 this.addCameraControls();
                 this.addFloor();
                 this.animate();
-                this.playSound(file);
+                //this.playSound(file);
                 this.addEventListener();
 
                 setInterval(() => {
@@ -213,7 +284,7 @@ const AudioVisualization = (loaderBar, playIntro, audioElement, btnPlay, btnPaus
             const material = new THREE.MeshLambertMaterial({
                 color: this.objectsColor,
                 emissive: 0x0
-            });
+              });
 
             for (let col = 0; col < cols; col++) {
                 positions[col] = [];
@@ -316,11 +387,8 @@ const AudioVisualization = (loaderBar, playIntro, audioElement, btnPlay, btnPaus
         }
 
         createScene() {
-            this.scene = new THREE.Scene();
-            this.scene.background = new THREE.Color(this.sceneBackGroundColor);
-
             this.renderer = new THREE.WebGLRenderer({ antialias: true });
-            console.log('width: '+canvas.offsetWidth +'  //   height:'+canvas.offsetHeight);
+            console.log('width: ' + canvas.offsetWidth + '  //   height:' + canvas.offsetHeight);
             this.renderer.setSize(canvas.offsetWidth, canvas.offsetHeight);
 
             this.renderer.shadowMap.enabled = true;
@@ -360,7 +428,7 @@ const AudioVisualization = (loaderBar, playIntro, audioElement, btnPlay, btnPaus
         }
 
         createCamera() {
-            this.camera = new THREE.PerspectiveCamera(30, canvas.offsetWidth/ canvas.offsetHeight, 1, 1000);
+            this.camera = new THREE.PerspectiveCamera(30, canvas.offsetWidth / canvas.offsetHeight, 1, 1000);
             this.camera.position.set(50, 50, -50);
             this.scene.add(this.camera);
         }
@@ -368,6 +436,7 @@ const AudioVisualization = (loaderBar, playIntro, audioElement, btnPlay, btnPaus
         addCameraControls() {
             this.controls = new OrbitControls(this.camera);
         }
+
         createObj(color, geometry, material) {
             const obj = new THREE.Mesh(geometry, material);
 
@@ -453,37 +522,12 @@ const AudioVisualization = (loaderBar, playIntro, audioElement, btnPlay, btnPaus
         radians(degrees) {
             return degrees * Math.PI / 180;
         }
-
-        setupAudio() {
-            //audioElement = document.getElementById('audio');
-            this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-            this.analyser = this.audioCtx.createAnalyser();
-            this.analyser.fftSize = 2048;
-            this.analyser.smoothingTimeConstant = .85;
-
-            this.source = this.audioCtx.createMediaElementSource(audioElement);
-            this.source.connect(this.analyser);
-            this.source.connect(this.audioCtx.destination);
-
-            this.bufferLength = this.analyser.frequencyBinCount;
-
-            this.frequencyData = new Uint8Array(this.bufferLength);
-            audioElement.volume = this.volume;
-
-            audioElement.addEventListener('playing', () => {
-                this.playing = true;
-            });
-            audioElement.addEventListener('pause', () => {
-                this.playing = false;
-            });
-            audioElement.addEventListener('ended', () => {
-                this.playing = false;
-                this.pause();
-            });
-        }
     }
-    new App();
+
+    var app = new App();
+
+    return app;
+
 }
 
 
