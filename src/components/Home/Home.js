@@ -17,6 +17,7 @@ function Home() {
 
     return (
         <div className="home" style={{ backgroundColor: colors[currentIndex] }}>
+            
             <div className="container">
                 <h1>AUDIO VISUALIZER</h1>
                 <img src={waveSvg} />

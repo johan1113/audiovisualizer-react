@@ -1,46 +1,56 @@
 .MixingBoard {
-    width: 35%;
+    width: 30%;
     height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: space-between;
 
     & .title {
         & h1 {
+            margin-top: 5vh;
             color: black;
         }
     }
 
-    & .color_pickers {
+    & .loaderPlayer{
         display: flex;
-        justify-content: center;
+        align-items: center;
+    }
+
+    & section {
+        width: 80%;
+        margin: 0 10%;
+        display: flex;
         flex-direction: column;
-        width: 100%;
+        align-items: center;
 
-        & section {
-            width: 80%;
-            margin: 0 10%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-
-            & h2 {
-                color: rgb(20, 20, 20);
-            }
-
-            & .hue-picker {
-                width: 100%;
-            }
+        & h2 {
+            color: rgb(20, 20, 20);
         }
 
-        & #bg {}
-
-        & #fg {}
+        & .hue-picker {
+            width: 100%;
+        }
     }
+
+    & #bg {
+    }
+
+    & #fg {}
+
+    & .widowButtons{
+        margin-bottom: 15vh;
+    }
+
+}
+
+input {
+    display: block;
+    z-index: 10;
 }
 
 #btn_black {
-    width: 80%;
     color: black;
     border: 2px solid black;
 

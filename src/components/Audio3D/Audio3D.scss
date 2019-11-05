@@ -1,5 +1,5 @@
 .Audio3D{
-    width: 65%;
+    width: 70%;
     height: 100%;
     margin: 0;
     padding: 0;
@@ -10,6 +10,17 @@
     overflow: hidden;
     cursor: -webkit-grab;
     cursor: -moz-grab;
+    text-align: center;
+    & h1{
+      margin-top: 10vh;
+      font-size: 35px;
+      color: #ae12d4;
+      padding: 0 10%;
+    }
+    & h2{
+      color: #ae12d4;
+      padding: 0 10%;
+    }
 }
 
 

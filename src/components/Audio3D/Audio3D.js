@@ -6,18 +6,23 @@ import './Audio3D.scss';
 
 const Audio3D = (props) => {
 
-    //const loaderBarParent = React.useRef();
-    const playIntroParent = React.useRef();
-    //const audioElementParent = React.useRef();
-    const btnPlayParent = React.useRef();
-    const btnPauseParent = React.useRef();
-    const canvasParent = React.useRef();
+    const [songName, setSongName] = React.useState(' ');
+    const [songArtist, setSongArtist] = React.useState(' ');
 
+    const canvasParent = React.useRef();
     const sketch = React.useRef();
 
     React.useEffect(() => {
-        sketch.current = AudioVisualization(playIntroParent.current, btnPlayParent.current, btnPauseParent.current, canvasParent.current, props.bgColor, props.fgColor);
+        sketch.current = AudioVisualization(canvasParent.current, props.bgColor, props.fgColor);
     }, []);
+
+    React.useEffect(() => {
+        if (props.onPlay) {
+            sketch.current.play();
+        } else {
+            sketch.current.pause();
+        }
+    }, [props.onPlay]);
 
     React.useEffect(() => {
         sketch.current.setSceneColor(props.bgColor);
@@ -26,72 +31,37 @@ const Audio3D = (props) => {
     React.useEffect(() => {
         sketch.current.setTalesColor(props.fgColor);
     }, [props.fgColor]);
-    
+
     React.useEffect(() => {
-        console.log(props.mp3File);
         sketch.current.setSongFile(props.mp3File);
-        //sketch.current.setSongFile('./songs/subhuman.mp3');
-    }, [props.mp3File]); 
+    }, [props.mp3File]);
+
+
+    React.useEffect(() => {
+        var getFileName = props.fileName.replace('.mp3', '').split('-', 2);
+        setSongName(getFileName[1]);
+        setSongArtist(getFileName[0]);
+    }, [props.fileName]);
 
     return (
-        <div className="Audio3D" width="65%" height="100%" ref={canvasParent}>
-
-            <button className="play-intro" ref={playIntroParent}>
-                <svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 32 32"
-                    data-tags="play,media control">
-                    <g fill="#ae12d4" transform="scale(0.03125 0.03125)">
-                        <path d="M192 0v1024l640-511.264-640-512.736z" />
-                    </g>
-                </svg>
-            </button >
-
-
-            <div className="credits" title="Music by Garth Knight">
-                <h3>{`Background Color: ${props.bgColor}  // Figures Color: ${props.fgColor}`}</h3>
-                {/* 
-                <h1 className="title">
-                    <a href="https://garth-knight.bandcamp.com/" target="_blank" rel="noopener noreferrer">Garth Knight </a>/
-                    <a href="https://garth-knight.bandcamp.com/track/autotron-re-master" target="_blank" rel="noopener noreferrer">AutoTron Re​-​Master</a>
-                </h1>
-                */}
-                <div className="controls">
-                    <button className="play" ref={btnPlayParent}>
-                        <svg xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" version="1.1" width="32" height="32" viewBox="0 0 25 32"
-                            data-tags="play,media control">
-                            <g fill="#ae12d4" transform="scale(0.03125 0.03125)">
-                                <path d="M192 0v1024l640-511.264-640-512.736z" />
-                            </g>
-                        </svg>
-                    </button>
-                    <button className="pause" ref={btnPauseParent}>
-                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" width="32" height="32" viewBox="0 0 32 32"
-                            data-tags="pause,media control">
-                            <g fill="#ae12d4" transform="scale(0.03125 0.03125)">
-                                <path d="M352 0h-192c-17.696 0-32 14.336-32 32v960c0 17.696 14.304 32 32 32h192c17.696 0 32-14.304 32-32v-960c0-17.664-14.304-32-32-32zM864 0h-192c-17.696 0-32 14.336-32 32v960c0 17.696 14.304 32 32 32h192c17.696 0 32-14.304 32-32v-960c0-17.664-14.304-32-32-32z"
-                                />
-                            </g>
-                        </svg>
-                    </button>
-                </div >
-            </div >
-
-            {/*<div className="loader" ref={loaderBarParent}></div>*/}
-            {/*<audio id="audio" crossOrigin="anonymous" ref={audioElementParent}></audio>*/}
+        <div className="Audio3D" width="65%" height="100%" ref={canvasParent} style={{backgroundColor: props.bgColor}}>
+            <h1 style={{color: props.fgColor}}>{songName}</h1>
+            <h2 style={{color: props.fgColor}}>{songArtist}</h2>
         </div>
     )
 }
 
-const AudioVisualization = (playIntro, btnPlay, btnPause, canvas, bgColor, fgColor) => {
+const AudioVisualization = (canvas, bgColor, fgColor) => {
 
     class App {
 
         constructor() {
 
             console.log('INGRESA AL CONSTRUCTOR DE AUDIO 3D');
-
             this.songFile = 'https://iondrimbafilho.me/autotron.mp3';
             //this.songFile = 'https://iondrimbafilho.me/3d5/ocean_drive.mp3';
             //this.songFile = './songs/subhuman.mp3';
+
             this.percent = 0;
             this.playing = false;
             this.volume = 1;
@@ -99,33 +69,19 @@ const AudioVisualization = (playIntro, btnPlay, btnPause, canvas, bgColor, fgCol
             this.objectsColor = fgColor;
             this.rowTiles = [];
             this.groupTiles = new THREE.Object3D();
-
-            //this.loader = new Loader();
-            //this.loader.progress(percent => { this.progress(percent); });
-            //loaderBar = document.querySelector('.loader');
-            //this.loader.load(this.songFile);
-            //this.loader.complete = this.complete.bind(this);
-            //playIntro = document.querySelector('.play-intro');
-            //this.load(this.songFile);
-            playIntro.classList.add('control-show');
             this.complete();
-
             this.scene = new THREE.Scene();
             this.scene.background = new THREE.Color(this.sceneBackGroundColor);
-            
-            
         }
 
-        setSongFile(newSongFile){            
+        setSongFile(newSongFile) {
 
-            if(this.audioElement){
+            if (this.audioElement) {
                 this.audioElement.pause();
             }
 
             this.songFile = newSongFile;
-
-            console.log('///////////// ENTRA A CAMBO DE AUDIO ////////////////');
-
+            console.log('///////////// ENTRA A CAMBIO DE AUDIO ////////////////');
             this.setupAudio();
         }
 
@@ -135,17 +91,9 @@ const AudioVisualization = (playIntro, btnPlay, btnPause, canvas, bgColor, fgCol
 
         setTalesColor(newColor) {
             this.objectsColor = newColor;
-            /*
-            this.material = new THREE.MeshLambertMaterial({
-                color: newColor,
-                emissive: 0x0
-            });
-            */
         }
 
         setupAudio() {
-            //this.audioElement = document.getElementById('audio');
-
             this.audioElement = new Audio();
             this.audioElement.src = this.songFile;
             //this.audioElement.controls = false;
@@ -181,46 +129,11 @@ const AudioVisualization = (playIntro, btnPlay, btnPause, canvas, bgColor, fgCol
             });
         }
 
-        /*
-        load(file) {
-            const request = new XMLHttpRequest();
-
-            request.open('GET', file, true);
-
-            request.onprogress = (evt) => {
-                const percent = Math.floor((evt.loaded / evt.total) * 100);
-
-                //this.callback(percent);
-            };
-
-            request.onload = () => { this.complete(file) };
-            request.send();
-            playIntro.classList.add('control-show');
-        }
-        */
-
-        /*
-        progress(percent) {
-            loaderBar.style.transform = `scale(${(percent / 100) + .1}, 1.1)`;
-
-            if (percent === 100) {
-                setTimeout(() => {
-                    requestAnimationFrame(() => {
-                        playIntro.classList.add('control-show');
-                        loaderBar.classList.add('removeLoader');
-                        loaderBar.style.transform = 'scale(1, 0)';
-                    })
-                }, 300);
-            }
-        }
-        */
-
         complete() {
             setTimeout(() => {
                 this.firstRing = new THREE.Object3D();
 
                 this.setupAudio();
-                this.addSoundControls();
                 this.createScene();
                 this.createCamera();
                 this.addAmbientLight();
@@ -228,7 +141,6 @@ const AudioVisualization = (playIntro, btnPlay, btnPause, canvas, bgColor, fgCol
                 this.addCameraControls();
                 this.addFloor();
                 this.animate();
-                //this.playSound();
                 this.addEventListener();
 
                 setInterval(() => {
@@ -298,7 +210,7 @@ const AudioVisualization = (playIntro, btnPlay, btnPause, canvas, bgColor, fgCol
             const material = new THREE.MeshLambertMaterial({
                 color: this.objectsColor,
                 emissive: 0x0
-              });
+            });
 
             for (let col = 0; col < cols; col++) {
                 positions[col] = [];
@@ -348,11 +260,6 @@ const AudioVisualization = (playIntro, btnPlay, btnPause, canvas, bgColor, fgCol
             positions = null;
         }
 
-        playSound() {
-            setTimeout(() => {
-                this.audioElement.src = this.songFile;
-            }, 1000);
-        }
 
         drawWave() {
             if (this.playing) {
@@ -374,30 +281,16 @@ const AudioVisualization = (playIntro, btnPlay, btnPause, canvas, bgColor, fgCol
             }
         }
 
-        addSoundControls() {
-            //btnPlay = document.querySelector('.play');
-            //btnPause = document.querySelector('.pause');
-
-            btnPlay.addEventListener('click', () => {
-                this.play();
-            });
-
-            btnPause.addEventListener('click', () => {
-                this.pause();
-            });
-        }
 
         pause() {
-            this.audioElement.pause();
-            btnPause.classList.remove('control-show');
-            btnPlay.classList.add('control-show');
+            if (this.audioElement != null) {
+                this.audioElement.pause();
+            }
         }
 
         play() {
             this.audioCtx.resume();
             this.audioElement.play();
-            btnPlay.classList.remove('control-show');
-            btnPause.classList.add('control-show');
         }
 
         createScene() {
@@ -415,10 +308,12 @@ const AudioVisualization = (playIntro, btnPlay, btnPause, canvas, bgColor, fgCol
         }
 
         addEventListener() {
+            /*
             playIntro.addEventListener('click', (evt) => {
                 evt.currentTarget.classList.remove('control-show');
                 this.play();
             });
+            */
 
             canvas.addEventListener('mouseup', () => {
                 requestAnimationFrame(() => {
