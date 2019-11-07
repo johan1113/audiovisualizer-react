@@ -1,6 +1,7 @@
 import React from 'react';
 import Audio3D from '../../components/Audio3D/Audio3D';
 import MixingBoard from '../../components/MixingBoard/MixingBoard';
+import Playlist from '../../components/Playlist/Playlist';
 import './AudioVisualizer.scss';
 import AudioVisualizerContext from '../../contexts/AudioVisualizerContext/AudioVisualizerContext';
 
@@ -11,6 +12,7 @@ function AudioVisualizer() {
     const [onPlay, setOnPlay] = React.useState(false);
     const [mp3File, setMp3File] = React.useState('https://iondrimbafilho.me/3d5/ocean_drive.mp3');
     const [fileName, setFileName] = React.useState('Artista - Título.mp3');
+    const [controllerCase, setControllerCase] = React.useState(0);
 
     const context = {
         bgColor: bgColor,
@@ -19,10 +21,12 @@ function AudioVisualizer() {
         setFgColor: setFgColor,
         onPlay: onPlay,
         setOnPlay: setOnPlay,
-        mp3File : mp3File,
-        setMp3File : setMp3File,
-        fileName : fileName,
-        setFileName: setFileName
+        mp3File: mp3File,
+        setMp3File: setMp3File,
+        fileName: fileName,
+        setFileName: setFileName,
+        controllerCase: controllerCase,
+        setControllerCase: setControllerCase
     }
 
     return (
@@ -30,9 +34,12 @@ function AudioVisualizer() {
 
             <AudioVisualizerContext.Provider value={context}>
 
+                {controllerCase == 0
+                    ? <MixingBoard setBgColor={setBgColor} setFgColor={setFgColor} setOnPlay={setOnPlay} setMp3File={setMp3File} setFileName={setFileName} setControllerCase={setControllerCase} bgColor={bgColor} fgColor={fgColor} onPlay={onPlay} mp3File={mp3File} fileName={fileName} />
+                    : <Playlist setControllerCase={setControllerCase} setBgColor={setBgColor} setFgColor={setFgColor} setOnPlay={setOnPlay} setMp3File={setMp3File} setFileName={setFileName} onPlay={onPlay} />
+                }
 
-                <MixingBoard setBgColor={setBgColor} setFgColor={setFgColor} bgColor={bgColor} fgColor={fgColor} setOnPlay={setOnPlay} onPlay={onPlay} setMp3File={setMp3File} setFileName={setFileName}/>
-                <Audio3D bgColor={bgColor} fgColor={fgColor} onPlay={onPlay} mp3File={mp3File} fileName={fileName}/>
+                <Audio3D bgColor={bgColor} fgColor={fgColor} onPlay={onPlay} mp3File={mp3File} fileName={fileName} />
 
             </AudioVisualizerContext.Provider>
             {/*

@@ -34,6 +34,34 @@ const MixingBoard = (props) => {
         props.setOnPlay(false);
     }
 
+    const handleSavedSongs = () => {
+
+        //localStorage.clear();
+        
+        var lsSongsList = JSON.parse(localStorage.getItem('songsList'));
+        var newSong = {
+            mp3File : props.mp3File,
+            fileName: props.fileName,
+            fgColor: props.fgColor,
+            bgColor: props.bgColor
+        }
+
+        if(lsSongsList != null){
+            lsSongsList.push(newSong);
+        }else{
+            lsSongsList = [];
+            lsSongsList.push(newSong);
+        }
+        localStorage.setItem('songsList', JSON.stringify(lsSongsList));
+
+        console.log('/////////// SE ACTUALIZÓ EL LOCAL STORAGE //////////////');
+        console.log(JSON.parse(localStorage.getItem('songsList')));
+    }
+
+    const handlePlaylist = () => {
+        props.setControllerCase(1);
+    }
+
     return (
         <div className="MixingBoard">
 
@@ -76,9 +104,9 @@ const MixingBoard = (props) => {
                 <CirclePicker color={props.bgColor} onChange={handleBgColorChange} />
             </section>
 
-            <div className="widowButtons">
-                <button className="button" id="btn_black">save this song</button>
-                <button className="button" id="btn_black">your saved songs</button>
+            <div className="windowButtons">
+                <button className="button" id="btn_black" onClick={handleSavedSongs}>save this song</button>
+                <button className="button" id="btn_black" onClick={handlePlaylist}>your saved songs</button>
             </div>
 
         </div>
