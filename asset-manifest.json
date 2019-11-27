@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/audiovisualizer-react/static/css/main.7d5464d7.chunk.css",
+    "main.js": "/audiovisualizer-react/static/js/main.3bc424b3.chunk.js",
+    "main.js.map": "/audiovisualizer-react/static/js/main.3bc424b3.chunk.js.map",
+    "runtime-main.js": "/audiovisualizer-react/static/js/runtime-main.18f4b33f.js",
+    "runtime-main.js.map": "/audiovisualizer-react/static/js/runtime-main.18f4b33f.js.map",
+    "static/js/2.b9949b10.chunk.js": "/audiovisualizer-react/static/js/2.b9949b10.chunk.js",
+    "static/js/2.b9949b10.chunk.js.map": "/audiovisualizer-react/static/js/2.b9949b10.chunk.js.map",
+    "index.html": "/audiovisualizer-react/index.html",
+    "precache-manifest.b6d7b0bcb976fc02bc6e8dc5543829c3.js": "/audiovisualizer-react/precache-manifest.b6d7b0bcb976fc02bc6e8dc5543829c3.js",
+    "service-worker.js": "/audiovisualizer-react/service-worker.js",
+    "static/css/main.7d5464d7.chunk.css.map": "/audiovisualizer-react/static/css/main.7d5464d7.chunk.css.map",
+    "static/media/wave.svg": "/audiovisualizer-react/static/media/wave.7540868e.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.18f4b33f.js",
+    "static/js/2.b9949b10.chunk.js",
+    "static/css/main.7d5464d7.chunk.css",
+    "static/js/main.3bc424b3.chunk.js"
+  ]
+}
